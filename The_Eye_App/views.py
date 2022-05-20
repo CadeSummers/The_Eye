@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
-
+from sys import _getframe
 
 ####CONSTS
 
@@ -16,16 +16,21 @@ REQUEST_CATEGORIES = ["User Authorization", "Registration", "Page Request", "For
 #host implemented as const of web address application serves at, in this case a general local home ip
 HOST = "127.0.0.1:8000"
 
-
+#####View functions
 
 # Create your views here.
 def login_request(request):
 
     #skeleton for login page
-    
 
     #establish a category for this kind of request. Normally, category could be inferred from payload
     category = REQUEST_CATEGORIES[0]
+
+    #grab this functions name
+    event = _getframe(0).f_code.co_name
+
+    #and utilize 'the_eye'
+    the_eye(request, category, event)
 
     return HttpResponse("You're Logged in!")
 
@@ -36,6 +41,12 @@ def register_request(request):
     #category : Registration
     category = REQUEST_CATEGORIES[1]
 
+    #grab this functions name
+    event = _getframe(0).f_code.co_name
+
+    #and utilize 'the_eye'
+    the_eye(request, category, event)
+
     return HttpResponse("You're registered!")
 
 def hello(request):
@@ -44,6 +55,12 @@ def hello(request):
 
     #Page Request category skeleton
     category = REQUEST_CATEGORIES[2]
+
+    #grab this functions name
+    event = _getframe(0).f_code.co_name
+
+    #and utilize 'the_eye'
+    the_eye(request, category, event)
 
     return HttpResponse("Hello!")
 
@@ -54,11 +71,17 @@ def get_in_contact(request):
     #Form Submission category skeleton
     category = REQUEST_CATEGORIES[3]
 
+    #grab this functions name
+    event = _getframe(0).f_code.co_name
+
+    #and utilize 'the_eye'
+    the_eye(request, category, event)
+
     return HttpResponse("Let's get in Contact!")
 
 #actual declaration of 'the_eye' function
 #In live project environment, I would consider create a seperate file for exclusively this function
-#configuring this function to take in the request, the cattegory, and a string naming the event
+#This fucntion is configured to take in the request, the category, and a string naming the event
 def the_eye(request, category, event: str):
 
     #get session id as session_key
@@ -72,7 +95,20 @@ def the_eye(request, category, event: str):
     #get timestamp for the event, saved as string
     timestamp = str(datetime.now())
 
-    #TODO zip together
+    #convert above variables and arguments into list format
+    event_values = [session_id, category, event, data, timestamp]
 
-    
-    pass
+    #if missing a value
+    if None in event_values:
+        
+        #Print error message to server and return failure
+        print("ERROR, event payload data missing")
+        return -1
+
+    #and create dict with standard keys and event values
+    event_dict = {STANDARD_KEYS[i]: event_values[i] for i in range(5)}
+
+    #return object, normally this would be returned to database architecture
+    return event_dict
+
+
