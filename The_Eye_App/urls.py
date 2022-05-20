@@ -10,6 +10,6 @@ urlpatterns = [
 
     path('hello/', views.hello),
 
-    path('form_submit/', views.get_in_contact)
+    path('get_in_contact/', views.get_in_contact)
 
 ]
