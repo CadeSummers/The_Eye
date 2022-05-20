@@ -16,6 +16,12 @@ REQUEST_CATEGORIES = ["User Authorization", "Registration", "Page Request", "For
 #host implemented as const of web address application serves at, in this case a general local home ip
 HOST = "127.0.0.1:8000"
 
+#global
+
+#Empty variable for the database configuration. As this is a skeleton Django project, in a live project environement, this could represent 
+#One of the numerous SQL style database configurations or any other db required/desired. Here it will be a simple dictionary
+database_placeholder = {}
+
 #####View functions
 
 # Create your views here.
@@ -30,7 +36,7 @@ def login_request(request):
     event = _getframe(0).f_code.co_name
 
     #and utilize 'the_eye'
-    the_eye(request, category, event)
+    database_placeholder[event] = the_eye(request, category, event)
 
     return HttpResponse("You're Logged in!")
 
@@ -45,7 +51,7 @@ def register_request(request):
     event = _getframe(0).f_code.co_name
 
     #and utilize 'the_eye'
-    the_eye(request, category, event)
+    database_placeholder[event] = the_eye(request, category, event)
 
     return HttpResponse("You're registered!")
 
@@ -60,7 +66,7 @@ def hello(request):
     event = _getframe(0).f_code.co_name
 
     #and utilize 'the_eye'
-    the_eye(request, category, event)
+    database_placeholder[event] = the_eye(request, category, event)
 
     return HttpResponse("Hello!")
 
@@ -75,7 +81,7 @@ def get_in_contact(request):
     event = _getframe(0).f_code.co_name
 
     #and utilize 'the_eye'
-    the_eye(request, category, event)
+    database_placeholder[event] = the_eye(request, category, event)
 
     return HttpResponse("Let's get in Contact!")
 
@@ -107,6 +113,9 @@ def the_eye(request, category, event: str):
 
     #and create dict with standard keys and event values
     event_dict = {STANDARD_KEYS[i]: event_values[i] for i in range(5)}
+
+    #tie this event to the requester's session (parallel session holding to database_placeholder)
+    request.session[event] = event_dict
 
     #return object, normally this would be returned to database architecture
     return event_dict
